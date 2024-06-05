@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    console.log('Sending login request with:', { username, password }); // 追加
     try {
-      const response = await axios.post('http://localhost:5000/api/login', {
+      const response = await axios.post('http://localhost:5001/api/login', {
         username,
         password
       });
       localStorage.setItem('token', response.data.token);
-      history.push('/dashboard');
+      navigate('/dashboard');
     } catch (error) {
       console.error('Login failed:', error);
     }
