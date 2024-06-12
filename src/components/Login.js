@@ -1,22 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import AuthContext from '../AuthContext';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log('Sending login request with:', { username, password }); // 追加
     try {
       const response = await axios.post('http://localhost:5001/api/login', {
         username,
         password
       });
-      localStorage.setItem('token', response.data.token);
-      navigate('/dashboard');
+      login(response.data.token);
     } catch (error) {
       console.error('Login failed:', error);
     }

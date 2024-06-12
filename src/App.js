@@ -1,32 +1,33 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import { AuthProvider, AuthContext } from './AuthContext';
+import './App.css';
 
 const App = () => {
   return (
     <Router>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-          <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
-        </ul>
-      </nav>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/" element={<div>Home Page</div>} />
-      </Routes>
+      <AuthProvider>
+        <Header />
+        <main>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={<ProtectedRoute component={Dashboard} />} />
+            <Route path="/" element={<div>Home Page</div>} />
+          </Routes>
+        </main>
+        <Footer />
+      </AuthProvider>
     </Router>
   );
 };
 
-export default App;
+const ProtectedRoute = ({ component: Component }) => {
+  const { auth } = useContext(AuthContext);
+  return auth.token ? <Component /> : <Login />;
+};
 
+export default App;
